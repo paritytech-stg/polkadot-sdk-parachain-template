@@ -1,7 +1,7 @@
 [package]
 name = "parachain-template-runtime"
-description = "A parachain runtime template built with Substrate and Cumulus, part of Polkadot Sdk."
-version = "0.0.0"
+description = "A parachain runtime template built with Substrate and Cumulus, part of Polkadot Sdk. (polkadot v1.9.0)"
+version = "0.1.0"
 license = "MIT-0"
 edition = "2021"
 publish = false
@@ -19,14 +19,14 @@ codec = { package = "parity-scale-codec", version = "3.0.0", default-features = 
 	"derive",
 ] }
 hex-literal = { version = "0.4.1", optional = true }
-log = { version = "0.4.21" }
-scale-info = { version = "2.11.1", default-features = false, features = [
+log = { version = "0.4.20" }
+scale-info = { version = "2.10.0", default-features = false, features = [
 	"derive",
 ] }
 smallvec = "1.11.0"
 
 # Local
-pallet-parachain-template = { path = "../pallets/template", default-features = false }
+pallet-parachain-template = { path = "../pallets/template", default-features = false, version = "0.1.0" }
 
 # Substrate / FRAME
 frame-benchmarking = { version = "31.0.0", default-features = false, optional = true }
@@ -72,9 +72,7 @@ xcm-executor = { version = "10.0.0", package = "staging-xcm-executor", default-f
 
 # Cumulus
 cumulus-pallet-aura-ext = { version = "0.10.0", default-features = false }
-cumulus-pallet-parachain-system = { version = "0.10.0", default-features = false, features = [
-	"parameterized-consensus-hook",
-] }
+cumulus-pallet-parachain-system = { version = "0.10.0", default-features = false, features = ["parameterized-consensus-hook"] }
 cumulus-pallet-session-benchmarking = { version = "12.0.0", default-features = false }
 cumulus-pallet-xcm = { version = "0.10.0", default-features = false }
 cumulus-pallet-xcmp-queue = { version = "0.10.0", default-features = false }
@@ -190,3 +188,5 @@ try-runtime = [
 	"polkadot-runtime-common/try-runtime",
 	"sp-runtime/try-runtime",
 ]
+
+experimental = ["pallet-aura/experimental"]

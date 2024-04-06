@@ -6592,7 +6592,7 @@ dependencies = [
 
 [[package]]
 name = "pallet-parachain-template"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
@@ -7084,7 +7084,7 @@ dependencies = [
 
 [[package]]
 name = "parachain-template-node"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "clap",
  "color-print",
@@ -7142,7 +7142,7 @@ dependencies = [
 
 [[package]]
 name = "parachain-template-runtime"
-version = "0.0.0"
+version = "0.1.0"
 dependencies = [
  "cumulus-pallet-aura-ext",
  "cumulus-pallet-parachain-system",
