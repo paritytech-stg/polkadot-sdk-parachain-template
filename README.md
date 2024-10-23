@@ -39,18 +39,72 @@ A Polkadot SDK based project such as this one consists of:
 * 🛠️ Depending on your operating system and Rust version, there might be additional
 packages required to compile this template - please take note of the Rust compiler output.
 
-### Build
-
-🔨 Use the following command to build the node without launching it:
+Fetch parachain template code:
 
 ```sh
-cargo build --package parachain-template-node --release
+git clone https://github.com/paritytech/polkadot-sdk-parachain-template.git parachain-template
+
+cd parachain-template
 ```
 
-🐳 Alternatively, build the docker image:
+### Build
+
+🔨 Use the following command to build just the `runtime`. There is also
+a `node` crate that when started can load the runtime accordingly, but the
+recommended way of running the template is with `Omni Node` (TODO: add link to the docs).
+
 
 ```sh
-docker build . -t polkadot-sdk-parachain-template
+cargo build --release
+```
+
+### Local Development Chain with Omni Node
+
+⬇️  Omni Node can run by using the `polkadot-omni-node` binary, which can be downloaded
+from [Polkadot SDK releases](https://github.com/paritytech/polkadot-sdk/releases/latest).
+
+🔗 Once downloaded, add it to the `PATH` environment variable like so:
+
+```sh
+export PATH="<path-to-binary>:$PATH"
+```
+
+↩️  If not already built, we should build the `runtime` and generate a development chain spec.
+The chain spec will be passed to the Omni Node binary when starting it.
+
+```sh
+# Build the parachain runtime.
+cargo build --release
+# Install chain-spec-builder if not installed already.
+cargo install staging-chain-spec-builder
+# Use chain-spec-builder to generate the chain_spec.json file based on the development preset.
+chain-spec-builder create --relay-chain "rococo-local" --para-id 1000 --runtime \
+    <target/release/wbuild/path/to/parachain-template-runtime.wasm> named-preset development
+```
+
+⚙️  The `relay-chain` and `para-id` flags in the chain spec generation above are extra bits of
+information required to configure the node in relation to its parachain id (which must be set
+to `1000` for the parachain template, to be the same as the `ParachainInfo` pallet [genesis config](https://github.com/paritytech/polkadot-sdk/blob/master/templates/parachain/runtime/src/genesis_config_presets.rs)).
+The `relay-chain` must correspond to the relay chain id where the parachain connects to.
+
+We'll start Omni Node with zombienet, but before doing that we must update the path to the
+`chain_spec.json` file in the `parachains` section of the `zombienet-omni-node.toml` file,
+which holds the zombienet network specification:
+
+```toml
+# ...
+[[parachains]]
+id = 1000
+# insert the correct path on your file system
+chain_spec_path = "<path/to/chain_spec.json>"
+# ...
+```
+
+🚀 Start the parachain runtime with Omni Node like below. This will
+start two relay chain nodes and one collator node:
+
+```sh
+zombienet --provider native spawn ./zombienet-omni-node.toml
 ```
 
 ### Local Development Chain
@@ -58,17 +112,19 @@ docker build . -t polkadot-sdk-parachain-template
 🧟 This project uses [Zombienet](https://github.com/paritytech/zombienet) to orchestrate the relaychain and parachain nodes.
 You can grab a [released binary](https://github.com/paritytech/zombienet/releases/latest) or use an [npm version](https://www.npmjs.com/package/@zombienet/cli).
 
-This template produces a parachain node.
+This template produces a parachain node. You can install it in your environment by running:
+
+```sh
+cargo install --path node
+```
+
 You still need a relaychain node - you can download the `polkadot`
 (and the accompanying `polkadot-prepare-worker` and `polkadot-execute-worker`)
 binaries from [Polkadot SDK releases](https://github.com/paritytech/polkadot-sdk/releases/latest).
 
-Make sure to bring the parachain node - as well as `polkadot`, `polkadot-prepare-worker`, `polkadot-execute-worker`,
-and `zombienet` - into `PATH` like so:
-
-```sh
-export PATH="./target/release/:$PATH"
-```
+In addition to the installed parachain node, make sure to bring
+`zombienet`, `polkadot`, `polkadot-prepare-worker`, and `polkadot-execute-worker`
+into `PATH`.
 
 This way, we can conveniently use them in the following steps.
 

@@ -14,8 +14,9 @@ ws_port = 9955
 
 [[parachains]]
 id = 1000
+chain_spec_path = "<path/to/chain_spec.json>"
 
 [parachains.collator]
 name = "charlie"
 ws_port = 9988
-command = "parachain-template-node"
+command = "polkadot-omni-node"
